@@ -20,7 +20,7 @@
 -   **Frontend**: HTML5, CSS3, JavaScript
 -   **Backend**: Node.js, Express
 -   **AI**: OpenAI API
--   **Data**: Instagram oEmbed / Graph API (예정)
+-   **Data**: Instagram oEmbed / Graph API
 
 ## 📦 설치 및 실행 방법
 
@@ -54,3 +54,4 @@
 ## 📝 라이선스
 
 이 프로젝트는 ISC 라이선스를 따릅니다.
+
