@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta AI Comment Helper</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Insta AI Comment Helper 🤖</h1>
+            <p>인스타그램 게시물 URL만 넣으면, AI가 센스있는 댓글을 추천해드려요!</p>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <form id="comment-form">
+                    <div class="input-group">
+                        <label for="url">인스타그램 게시물 URL</label>
+                        <input type="url" id="url" name="url" placeholder="https://www.instagram.com/p/..." required>
+                    </div>
+                    
+                    <div class="options-group">
+                        <div class="option">
+                            <label for="tone">분위기</label>
+                            <select id="tone" name="tone">
+                                <option value="friendly">친근하게 (기본)</option>
+                                <option value="funny">재미있게</option>
+                                <option value="emotional">감성적으로</option>
+                                <option value="formal">정중하게</option>
+                            </select>
+                        </div>
+                        <div class="option">
+                            <label for="length">길이</label>
+                            <select id="length" name="length">
+                                <option value="short">짧게 (1문장)</option>
+                                <option value="medium">적당히 (2-3문장)</option>
+                                <option value="long">길게</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn">댓글 추천 받기 ✨</button>
+                </form>
+            </section>
+
+            <section id="result-section" class="result-section hidden">
+                <div class="caption-box">
+                    <h3>📝 게시물 캡션</h3>
+                    <p id="caption-text">캡션을 불러오는 중...</p>
+                </div>
+
+                <div class="comments-box">
+                    <h3>💬 추천 댓글</h3>
+                    <ul id="comments-list">
+                        <!-- Comments will be injected here -->
+                    </ul>
+                </div>
+            </section>
+
+            <div id="loading-spinner" class="hidden">
+                <div class="spinner"></div>
+                <p>AI가 댓글을 생각하고 있어요... 🤔</p>
+            </div>
+            
+            <div id="error-message" class="error-message hidden"></div>
+        </main>
+
+        <footer>
+            <p>© 2024 Insta AI Comment Helper. Not affiliated with Instagram.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
