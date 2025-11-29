@@ -1,25 +1,56 @@
-const axios = require('axios');
+const puppeteer = require('puppeteer');
 
 async function getPostCaption(postUrl) {
+    let browser;
     try {
-        // Instagram oEmbed API endpoint
-        const oEmbedUrl = `https://graph.facebook.com/v17.0/instagram_oembed?url=${encodeURIComponent(postUrl)}&access_token=${process.env.FB_ACCESS_TOKEN}`;
+        console.log('Launching browser to scrape Instagram...');
+        browser = await puppeteer.launch({
+            headless: "new",
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=ko-KR']
+        });
+        const page = await browser.newPage();
 
-        // Note: oEmbed requires an access token (App Access Token or User Access Token)
-        // If we don't have a token, we might need to rely on a different method or ask the user for one.
-        // For now, we assume the user provides a token in .env
+        // Set user agent to avoid being blocked immediately
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-        const response = await axios.get(oEmbedUrl);
+        console.log(`Navigating to ${postUrl}...`);
+        await page.goto(postUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-        if (response.data && response.data.title) {
-            return response.data.title; // The caption is often in the 'title' field for oEmbed
-        } else {
-            throw new Error('Caption not found in oEmbed response');
+        // Extract content from meta tag
+        // Instagram usually puts the caption in og:description or title
+        // Format: "Username on Instagram: "Caption...""
+        const description = await page.$eval('meta[property="og:description"]', element => element.content);
+
+        console.log('Scraped description:', description);
+
+        if (!description) {
+            throw new Error('No description found');
         }
+
+        // Clean up the description
+        // Usually starts with "Username on Instagram: " or similar
+        // We can try to extract the part after the first colon or quote, but it varies.
+        // For now, returning the whole description is safer, or simple cleanup:
+
+        // Remove "Username on Instagram: " prefix if present (heuristic)
+        let caption = description;
+        const match = description.match(/on Instagram: "([^"]+)"/);
+        if (match && match[1]) {
+            caption = match[1];
+        } else {
+            // Fallback: try to remove the " - Instagram" suffix or similar
+            caption = caption.replace(/ - Instagram.*$/, '');
+        }
+
+        return caption;
+
     } catch (error) {
-        console.error('Error fetching Instagram post:', error.message);
-        // Fallback or re-throw
-        throw new Error('Failed to fetch Instagram post info');
+        console.error('Puppeteer Scraping Error:', error.message);
+        throw new Error('Failed to fetch Instagram post info (Scraping failed)');
+    } finally {
+        if (browser) {
+            await browser.close();
+        }
     }
 }
 
